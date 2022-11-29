@@ -1,6 +1,6 @@
 package org.example.client;
 
-import org.example.Game.Renderer;
+import org.example.Game.GUI.Renderer;
 import org.example.Game.SnakeGame;
 
 import javax.swing.*;

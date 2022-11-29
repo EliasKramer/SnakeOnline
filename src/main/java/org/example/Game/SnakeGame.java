@@ -10,34 +10,45 @@ public class SnakeGame {
     private FieldValue[][] _board;
     private Colors[][] _colorBoard;
     private LinkedList<Snake> _snakes;
+    private Colors _foodColor;
+    private Position _foodPosition;
+    public SnakeGame(int size){
+        this(size, size);
+    }
     public SnakeGame(int width, int height) {
         _board = new FieldValue[width][height];
         _colorBoard = new Colors[width][height];
         _snakes = new LinkedList<>();
+        _foodPosition = null;
+        _foodColor = Colors.CYAN;
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 _board[i][j] = FieldValue.EMPTY;
+                _colorBoard[i][j] = Colors.RESET;
             }
         }
     }
 
-    public SnakeGame(int size) {
-        this(size, size);
-    }
-
-    public String getBoardString() {
+    public void printBoard() {
         StringBuilder sb = new StringBuilder();
-        for (FieldValue[] fieldValues : _board) {
-            for (FieldValue fieldValue : fieldValues) {
-                sb.append(fieldValue.getValue());
+
+        for (int i = 0; i < _board.length; i++) {
+            for (int j = 0; j < _board[i].length; j++) {
+                sb.append(_colorBoard[j][i].getValue());
+                sb.append(_board[j][i].getValue());
+                sb.append(" ");
+                sb.append(Colors.RESET.getValue());
             }
             sb.append("\n");
         }
 
-        return sb.toString();
+        System.out.println(sb.toString());
     }
-    public void addSnake(Snake snake) {
+
+    public void addSnake(Colors givenColor, String givenName) {
+        Snake snake = new Snake(Colors.BLUE, "blue_snake", Direction.RIGHT, getRandomEmptyPosition());
+        //TODO add system to not face wall when spawned
         _snakes.add(snake);
         GamePackage add = new GamePackage(
                 snake.getHead(),
@@ -46,42 +57,70 @@ public class SnakeGame {
         processGamePackage(add);
     }
 
-    public void processNextUpdate()
-    {
+    public void processNextUpdate() {
         List<GamePackage> gamePackages = getPositionChangesForNewUpdate();
-        for(GamePackage curr: gamePackages)
-        {
+        for (GamePackage curr : gamePackages) {
             processGamePackage(curr);
         }
     }
-
+    public void updateFood() {
+        if (foodIsEaten()) {
+            _foodPosition = getRandomEmptyPosition();
+            setValueAtPosition(new GamePackage(_foodPosition, _foodColor, FieldValue.FOOD));
+        }
+    }
     private void processGamePackage(GamePackage gamePackage) {
         setValueAtPosition(gamePackage);
     }
 
+    private boolean foodIsEaten() {
+        return _foodPosition == null;
+    }
 
-    private List<GamePackage> getPositionChangesForNewUpdate(){
+    private Position getRandomEmptyPosition() {
+        var emptyFields = getEmptyFields();
+        if (emptyFields.isEmpty()) {
+            throw new IllegalStateException("There are no empty fields left");
+        }
+
+        int randomIndex = (int) (Math.random() * emptyFields.size());
+
+        return emptyFields.get(randomIndex);
+    }
+
+    private List<Position> getEmptyFields() {
+        List<Position> emptyFields = new LinkedList<>();
+        for (int i = 0; i < _board.length; i++) {
+            for (int j = 0; j < _board[i].length; j++) {
+                if (_board[i][j] == FieldValue.EMPTY) {
+                    emptyFields.add(new Position(i, j));
+                }
+            }
+        }
+        return emptyFields;
+    }
+
+    private List<GamePackage> getPositionChangesForNewUpdate() {
         LinkedList<GamePackage> gamePackages = new LinkedList<>();
         LinkedList<Snake> snakesToRemove = new LinkedList<>();
         for (Snake snake : _snakes) {
-            MovePackage movePackage =  snake.getNextMovePackage();
+            MovePackage movePackage = snake.getNextMovePackage();
 
             Position nextHeadPos = movePackage.getAddPackage().getPosition();
             //next head position will be off board
-            if(!positionIsOnBoard(nextHeadPos) ||
-                positionCollidesWithAnyBody(nextHeadPos)
-            ){
+            if (!positionIsOnBoard(nextHeadPos) ||
+                    positionCollidesWithAnyBody(nextHeadPos)
+            ) {
                 //kill snake
                 gamePackages.addAll(snake.deleteSnake());
                 snakesToRemove.add(snake);
-            }
-            else if(positionCollidesWithFood(nextHeadPos)){
+            } else if (positionCollidesWithFood(nextHeadPos)) {
                 //eat food
                 snake.eatFood();
                 gamePackages.add(movePackage.getAddPackage());
+                _foodPosition = null;
                 snake.move();
-            }
-            else{
+            } else {
                 //move snake
                 gamePackages.add(movePackage.getAddPackage());
                 gamePackages.add(movePackage.getRemovePackage());
@@ -89,7 +128,7 @@ public class SnakeGame {
             }
         }
 
-        for(Snake snake: snakesToRemove){
+        for (Snake snake : snakesToRemove) {
             _snakes.remove(snake);
         }
 
@@ -97,16 +136,18 @@ public class SnakeGame {
     }
 
     private boolean positionCollidesWithFood(Position nextHeadPos) {
-        return getValueAtPosition(nextHeadPos) == FieldValue.FOOD;
+        return !foodIsEaten() && nextHeadPos.equals(_foodPosition);
     }
-    private FieldValue getValueAtPosition(Position position){
-        if(positionIsOnBoard(position)){
+
+    private FieldValue getValueAtPosition(Position position) {
+        if (positionIsOnBoard(position)) {
             return _board[position.getX()][position.getY()];
         }
         throw new IllegalArgumentException("Position is not on board");
     }
-    private void setValueAtPosition(GamePackage gamePackage){
-        if(positionIsOnBoard(gamePackage.getPosition())){
+
+    private void setValueAtPosition(GamePackage gamePackage) {
+        if (positionIsOnBoard(gamePackage.getPosition())) {
             _board
                     [gamePackage.getPosition().getX()]
                     [gamePackage.getPosition().getY()] =
@@ -115,29 +156,22 @@ public class SnakeGame {
                     [gamePackage.getPosition().getX()]
                     [gamePackage.getPosition().getY()] =
                     gamePackage.getColor();
-        }
-        else{
+        } else {
             throw new IllegalArgumentException("Position is not on board");
         }
     }
-    private boolean positionCollidesWithAnyBody(Position position){
+
+    private boolean positionCollidesWithAnyBody(Position position) {
         for (Snake curr : _snakes) {
-            if(curr.pointOverlapsWithBody(position)){
+            if (curr.pointOverlapsWithBody(position)) {
                 return true;
             }
         }
         return false;
     }
+
     private boolean positionIsOnBoard(Position position) {
         return position.getX() >= 0 && position.getX() < _board.length &&
                 position.getY() >= 0 && position.getY() < _board[0].length;
-    }
-
-    public FieldValue[][] getBoard() {
-        return _board;
-    }
-
-    public void printBoard() {
-        System.out.println(getBoardString());
     }
 }

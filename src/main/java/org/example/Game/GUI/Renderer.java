@@ -1,4 +1,6 @@
-package org.example.Game;
+package org.example.Game.GUI;
+
+import org.example.Game.SnakeGame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +14,7 @@ public class Renderer extends JPanel {
 
     @Override
     public void paintComponent(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g;
+        /*Graphics2D g2 = (Graphics2D) g;
         double dimX = (double) getWidth() / (double) snakeGame.getBoard().length;
         double dimY = (double) getHeight() / (double) snakeGame.getBoard()[0].length;
 
@@ -26,6 +28,6 @@ public class Renderer extends JPanel {
                 var field = snakeGame.getBoard()[i][j];
                 g2.drawString(field.getValue(), (int)(i*dim) + (int)(dim*0.3), (int)(j*dim) + (int)dim);
             }
-        }
+        }*/
     }
 }

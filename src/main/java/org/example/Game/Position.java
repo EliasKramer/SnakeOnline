@@ -28,4 +28,12 @@ public class Position {
     public void setY(int y) {
         _y = y;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return
+                obj instanceof Position &&
+                        ((Position) obj)._x == _x &&
+                        ((Position) obj)._y == _y;
+    }
 }
