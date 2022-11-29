@@ -24,7 +24,7 @@ public class Renderer extends JPanel {
         for (int i = 0; i < snakeGame.getBoard().length; i++) {
             for (int j = 0; j < snakeGame.getBoard()[i].length; j++) {
                 var field = snakeGame.getBoard()[i][j];
-                g2.drawString(field.getValue(), (int)(i*dim), (int)(j*dim) + (int)dim);
+                g2.drawString(field.getValue(), (int)(i*dim) + (int)(dim*0.3), (int)(j*dim) + (int)dim);
             }
         }
     }

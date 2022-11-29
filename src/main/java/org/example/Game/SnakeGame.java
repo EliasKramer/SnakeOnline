@@ -30,12 +30,12 @@ public class SnakeGame {
         StringBuilder sb = new StringBuilder();
         for (FieldValue[] fieldValues : _board) {
             for (FieldValue fieldValue : fieldValues) {
-                sb.append(fieldValue);
+                sb.append(fieldValue.getValue());
             }
             sb.append("\n");
         }
 
-        System.out.println(sb.toString());
+        return sb.toString();
     }
     public void addSnake(Snake snake) {
         _snakes.add(snake);
@@ -131,5 +131,13 @@ public class SnakeGame {
     private boolean positionIsOnBoard(Position position) {
         return position.getX() >= 0 && position.getX() < _board.length &&
                 position.getY() >= 0 && position.getY() < _board[0].length;
+    }
+
+    public FieldValue[][] getBoard() {
+        return _board;
+    }
+
+    public void printBoard() {
+        System.out.println(getBoardString());
     }
 }
