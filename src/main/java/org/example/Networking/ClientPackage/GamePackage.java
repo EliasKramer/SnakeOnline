@@ -1,10 +1,8 @@
-package org.example.Networking;
+package org.example.Networking.ClientPackage;
 
 import org.example.Game.Colors;
 import org.example.Game.FieldValue;
 import org.example.Game.Position;
-
-import java.awt.geom.Point2D;
 
 public class GamePackage {
     private final Position _position;

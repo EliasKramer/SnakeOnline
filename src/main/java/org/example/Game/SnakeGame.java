@@ -1,7 +1,7 @@
 package org.example.Game;
 
-import org.example.Networking.GamePackage;
-import org.example.Networking.MovePackage;
+import org.example.Networking.ClientPackage.GamePackage;
+import org.example.Networking.ClientPackage.MovePackage;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -47,7 +47,7 @@ public class SnakeGame {
     }
 
     public void addSnake(Colors givenColor, String givenName) {
-        Snake snake = new Snake(Colors.BLUE, "blue_snake", Direction.RIGHT, getRandomEmptyPosition());
+        Snake snake = new Snake(givenColor, givenName, Direction.RIGHT, getRandomEmptyPosition());
         //TODO add system to not face wall when spawned
         _snakes.add(snake);
         GamePackage add = new GamePackage(
@@ -69,8 +69,23 @@ public class SnakeGame {
             setValueAtPosition(new GamePackage(_foodPosition, _foodColor, FieldValue.FOOD));
         }
     }
-    private void processGamePackage(GamePackage gamePackage) {
+    public List<GamePackage> getBoardInGamePackages()
+    {
+        List<GamePackage> gamePackages = new LinkedList<>();
+        for (int i = 0; i < _board.length; i++) {
+            for (int j = 0; j < _board[i].length; j++) {
+                gamePackages.add(new GamePackage(new Position(i, j), _colorBoard[i][j], _board[i][j]));
+            }
+        }
+        return gamePackages;
+    }
+    public void processGamePackage(GamePackage gamePackage) {
         setValueAtPosition(gamePackage);
+    }
+    public void processGamePackages(List<GamePackage> gamePackages) {
+        for (GamePackage curr : gamePackages) {
+            setValueAtPosition(curr);
+        }
     }
 
     private boolean foodIsEaten() {
@@ -99,7 +114,7 @@ public class SnakeGame {
         }
         return emptyFields;
     }
-
+    //this function is not idempotent
     private List<GamePackage> getPositionChangesForNewUpdate() {
         LinkedList<GamePackage> gamePackages = new LinkedList<>();
         LinkedList<Snake> snakesToRemove = new LinkedList<>();
