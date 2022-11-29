@@ -9,7 +9,8 @@ public enum FieldValue {
         _value = value;
     }
 
-    public String getValue() {
+    public String getValue()
+    {
         return _value;
     }
 }
