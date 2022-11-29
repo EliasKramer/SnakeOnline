@@ -8,4 +8,8 @@ public enum FieldValue {
     FieldValue(String value) {
         _value = value;
     }
+
+    public String getValue() {
+        return _value;
+    }
 }
