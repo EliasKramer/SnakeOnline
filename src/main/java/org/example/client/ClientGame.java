@@ -30,7 +30,7 @@ public class ClientGame {
             _client = new Socket(ip, NetworkSettings.PORT);
         } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException("Could not connect to server");
+            throw   new RuntimeException("Could not connect to server");
         }
 
         int height;

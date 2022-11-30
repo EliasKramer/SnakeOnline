@@ -20,7 +20,7 @@ public class Server extends Thread {
     private final SnakeGame _game;
     private boolean _running = true;
     //new game state every 1000ms
-    private final float _stateUpdateCycle = 1000f;
+    private final long _stateUpdateCycle = 500;
 
     ServerSocket _server;
 
