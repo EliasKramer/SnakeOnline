@@ -1,13 +1,12 @@
 package org.example.client;
 
 import org.example.Game.*;
+import org.example.Game.Input.InputListener;
 import org.example.Networking.ClientPackage.GamePackage;
 import org.example.Networking.NetworkSettings;
+import org.example.Networking.ServerPackage.InputPackage;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,6 +21,7 @@ public class ClientGame {
     private ClientWindow _window;
 
     private ObjectInputStream _ois;
+    private ObjectOutputStream _oos;
     public ClientGame() {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter the server IP: ");
@@ -37,6 +37,7 @@ public class ClientGame {
         int width;
         try{
             _ois = new ObjectInputStream(new BufferedInputStream(_client.getInputStream()));
+            _oos = new ObjectOutputStream(new BufferedOutputStream(_client.getOutputStream()));
             height = _ois.readInt();
             width = _ois.readInt();
         } catch (IOException e) {
@@ -62,6 +63,8 @@ public class ClientGame {
             }
         });
         t.start();
+
+        InputListener listener = new InputListener(this);
     }
 
     public void setWindow(ClientWindow window) {
@@ -116,5 +119,13 @@ public class ClientGame {
 
     public FieldValue[][] getBoard() {
         return _board;
+    }
+
+    public void sendInput(Direction direction) {
+        try {
+            _oos.writeObject(new InputPackage(_client.getInetAddress().toString(), direction));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

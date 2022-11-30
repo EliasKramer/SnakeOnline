@@ -3,20 +3,19 @@ package org.example.Networking.ServerPackage;
 import org.example.Game.Direction;
 import org.example.Server.Server;
 
-public class InputPackage implements ServerPackage {
+import java.io.Serializable;
+
+public class InputPackage implements ServerPackage, Serializable {
     private final String _userId;
     private final Direction _direction;
-    private final long _timeStamp;
 
-    public InputPackage(String userId, Direction direction, long timeStamp) {
+    public InputPackage(String userId, Direction direction) {
         _userId = userId;
         _direction = direction;
-        _timeStamp = timeStamp;
     }
 
     @Override
     public void executeOnServer(Server server) {
-        server.handleInputPackage(this);
     }
 
     public String getUserId() {
@@ -25,9 +24,5 @@ public class InputPackage implements ServerPackage {
 
     public Direction getDirection() {
         return _direction;
-    }
-
-    public long getTimestamp() {
-        return _timeStamp;
     }
 }

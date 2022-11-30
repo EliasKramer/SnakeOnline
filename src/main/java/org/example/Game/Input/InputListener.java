@@ -1,6 +1,6 @@
 package org.example.Game.Input;
 import org.example.Game.Direction;
-import org.example.client.Client;
+import org.example.client.ClientGame;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;
@@ -9,8 +9,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class InputListener implements NativeKeyListener {
-    private final Client _client;
-    public InputListener(Client client)
+    private final ClientGame _client;
+    public InputListener(ClientGame client)
     {
         _client = client;
         registerHook();

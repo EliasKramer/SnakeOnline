@@ -7,9 +7,7 @@ import org.example.Networking.ServerPackage.AddUserPackage;
 import org.example.Networking.ServerPackage.InputPackage;
 
 import java.awt.*;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.DatagramPacket;
@@ -49,12 +47,33 @@ public class Server extends Thread {
         _clientInputMap = new HashMap<>();
 
 
+        startHandleUsersThread();
+    }
+
+    private void startHandleUsersThread() {
         Thread t = new Thread(() -> {
             while(_running) {
                 try {
                     Socket client = _server.accept();
                     System.out.println("Client connected");
                     _clients.add(client);
+
+                    handleAddUserPackage(new AddUserPackage(client.getInetAddress().toString()));
+
+                    Thread clientInputThread = new Thread(() -> {
+                        try(ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(client.getInputStream()))) {
+                            while(true) {
+                                InputPackage inputPackage = (InputPackage) ois.readObject();
+                                _clientInputMap.put(inputPackage.getUserId(), inputPackage);
+                            }
+                        }catch(SocketException e) {
+                            System.out.println("Client disconnected");
+                            _clients.remove(client);
+                        } catch (IOException | ClassNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    clientInputThread.start();
 
                     try{
                         ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(client.getOutputStream()));
@@ -78,8 +97,6 @@ public class Server extends Thread {
 
     @Override
     public void run() {
-        runRequestHandler();
-
         long lastTimeUpdated = getCurrentTimeInMs();
         long iterationsBetweenUpdate = 0;
         _game.updateFood();
@@ -104,6 +121,9 @@ public class Server extends Thread {
                     try{
                         oos.writeObject(gamePackages);
                         oos.flush();
+                    } catch(SocketException e) {
+                        System.out.println("Client disconnected");
+                        _oos.remove(oos);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -120,22 +140,6 @@ public class Server extends Thread {
         }
     }
 
-    private void runRequestHandler() {
-        Thread t = new Thread(() -> {
-            while (_running) {
-                //wait for requests
-                DatagramPacket packet = new DatagramPacket(new byte[256], 256);
-                try {
-                    //_socket.receive(packet);
-                } catch (Exception e) {
-                    throw new RuntimeException("There was an exception while receiving a packet.\n" + e);
-                }
-            }
-        });
-        t.start();
-
-        System.out.println("RequestHandler started");
-    }
 
     public void handleAddUserPackage(AddUserPackage givenPackage) {
         if(givenPackage == null) {
@@ -149,39 +153,6 @@ public class Server extends Thread {
         _game.addSnake(givenPackage.getUserId(), Colors.GREEN, "Snake name");
     }
 
-    public void handleInputPackage(InputPackage givenPackage) {
-        if(givenPackage == null) {
-            throw new IllegalArgumentException("givenPackage cannot be null");
-        }
-        System.out.println("received input package from " + givenPackage.getUserId() + " with direction " + givenPackage.getDirection());
-
-        InputPackage currentSavedInput = null;
-        if (_clientInputMap.containsKey(givenPackage.getUserId())) {
-            currentSavedInput = _clientInputMap.get(givenPackage.getUserId());
-        } else {
-            System.out.println("A user with the id " + givenPackage.getUserId() +
-                    " tried to send an input package but was not found in the server's input map.");
-        }
-        if(currentSavedInput == null)
-        {
-            System.out.println("the saved input was null");
-        }
-        else{
-            System.out.println("timestamp new: " + givenPackage.getTimestamp() + " saved: " + currentSavedInput.getTimestamp());
-            System.out.println("new one is greater: " + (givenPackage.getTimestamp() > currentSavedInput.getTimestamp()));
-        }
-        //if a recent package exists for this user, replace it (only if it is more recent)
-        if (currentSavedInput != null && currentSavedInput.getTimestamp() < givenPackage.getTimestamp()) {
-            System.out.println("updating input package for " + givenPackage.getUserId());
-            _clientInputMap.put(givenPackage.getUserId(), givenPackage);
-        }
-        //if no recent package exists for this user, add it
-        else if (currentSavedInput == null) {
-            System.out.println("adding input package for " + givenPackage.getUserId());
-            _clientInputMap.put(givenPackage.getUserId(), givenPackage);
-        }
-        //else: the current package is more recent than the saved one, so do nothing
-    }
     private long getCurrentTimeInMs() {
         return Instant.now().toEpochMilli();
     }
