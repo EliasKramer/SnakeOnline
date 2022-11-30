@@ -22,7 +22,7 @@ public class InputListener implements NativeKeyListener {
         try {
             GlobalScreen.registerNativeHook();
         } catch (NativeHookException e) {
-            System.exit(-1);
+            throw new RuntimeException("There was an exception while initializing the input listener. \n"+e);
         }
 
         GlobalScreen.addNativeKeyListener(this);

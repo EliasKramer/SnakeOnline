@@ -12,13 +12,19 @@ public class SnakeGame {
     private LinkedList<Snake> _snakes;
     private Colors _foodColor;
     private Position _foodPosition;
-    public SnakeGame(int size){
+    private List<Snake> _deadSnakes;
+    private List<Snake> _snakesToRemove;
+
+    public SnakeGame(int size) {
         this(size, size);
     }
+
     public SnakeGame(int width, int height) {
         _board = new FieldValue[width][height];
         _colorBoard = new Colors[width][height];
         _snakes = new LinkedList<>();
+        _deadSnakes = new LinkedList<>();
+        _snakesToRemove = new LinkedList<>();
         _foodPosition = null;
         _foodColor = Colors.CYAN;
 
@@ -73,14 +79,15 @@ public class SnakeGame {
             processGamePackage(curr);
         }
     }
+
     public void updateFood() {
         if (foodIsEaten()) {
             _foodPosition = getRandomEmptyPosition();
             setValueAtPosition(new GamePackage(_foodPosition, _foodColor, FieldValue.FOOD));
         }
     }
-    public List<GamePackage> getBoardInGamePackages()
-    {
+
+    public List<GamePackage> getBoardInGamePackages() {
         List<GamePackage> gamePackages = new LinkedList<>();
         for (int i = 0; i < _board.length; i++) {
             for (int j = 0; j < _board[i].length; j++) {
@@ -89,15 +96,25 @@ public class SnakeGame {
         }
         return gamePackages;
     }
+
     public void processGamePackage(GamePackage gamePackage) {
         setValueAtPosition(gamePackage);
     }
+
     public void processGamePackages(List<GamePackage> gamePackages) {
         for (GamePackage curr : gamePackages) {
             setValueAtPosition(curr);
         }
     }
-
+    //removes snake in the next update
+    public void removeSnake(String id) {
+        for (Snake snake : _snakes) {
+            if (snake.getId().equals(id)) {
+                _snakesToRemove.add(snake);
+                break;
+            }
+        }
+    }
     private boolean foodIsEaten() {
         return _foodPosition == null;
     }
@@ -124,10 +141,10 @@ public class SnakeGame {
         }
         return emptyFields;
     }
+
     //this function is not idempotent
     public List<GamePackage> getPositionChangesForNewUpdate() {
         LinkedList<GamePackage> gamePackages = new LinkedList<>();
-        LinkedList<Snake> snakesToRemove = new LinkedList<>();
         for (Snake snake : _snakes) {
             MovePackage movePackage = snake.getNextMovePackage();
 
@@ -137,8 +154,8 @@ public class SnakeGame {
                     positionCollidesWithAnyBody(nextHeadPos)
             ) {
                 //kill snake
-                gamePackages.addAll(snake.deleteSnake());
-                snakesToRemove.add(snake);
+                _deadSnakes.add(snake);
+                _snakesToRemove.add(snake);
             } else if (positionCollidesWithFood(nextHeadPos)) {
                 //eat food
                 snake.eatFood();
@@ -153,9 +170,11 @@ public class SnakeGame {
             }
         }
 
-        for (Snake snake : snakesToRemove) {
+        for (Snake snake : _snakesToRemove) {
             _snakes.remove(snake);
+            gamePackages.addAll(snake.deleteSnake());
         }
+        _snakesToRemove.clear();
 
         return gamePackages;
     }
