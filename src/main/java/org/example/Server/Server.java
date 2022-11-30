@@ -33,7 +33,7 @@ public class Server extends Thread {
     private List<ObjectOutputStream> _oos = new LinkedList<>();
 
     private int _port;
-    private Map<String, InputPackage> _clientInputMap;
+    private Map<String, Direction> _clientInputMap;
 
     public Server(String givenName, int givenPort) {
         _name = givenName;
@@ -64,7 +64,7 @@ public class Server extends Thread {
                         try(ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(client.getInputStream()))) {
                             while(true) {
                                 InputPackage inputPackage = (InputPackage) ois.readObject();
-                                _clientInputMap.put(inputPackage.getUserId(), inputPackage);
+                                _clientInputMap.put(client.getInetAddress().toString(), inputPackage.getDirection());
                             }
                         }catch(SocketException e) {
                             System.out.println("Client disconnected");
@@ -83,7 +83,7 @@ public class Server extends Thread {
                         oos.writeInt(_game.getWidth());
                         oos.flush();
 
-                        oos.writeObject(_game.fullGamePackageBoard());
+                        oos.writeObject(_game.getBoardInGamePackages());
                     }
                     catch (IOException e) {
                         throw new RuntimeException(e);
@@ -107,10 +107,9 @@ public class Server extends Thread {
             final long timeSinceLastUpdate = currTime - lastTimeUpdated;
 
             if (timeSinceLastUpdate >= _stateUpdateCycle) {
-                for (InputPackage
-                        inputPackage : _clientInputMap.values()) {
-                    if(inputPackage != null) {
-                        _game.setSnakeDirection(inputPackage.getUserId(), inputPackage.getDirection());
+                for(String userId : _clientInputMap.keySet()) {
+                    if(_clientInputMap.get(userId) != null) {
+                        _game.setSnakeDirection(userId, _clientInputMap.get(userId));
                     }
                 }
 

@@ -227,16 +227,4 @@ public class SnakeGame {
         return _board.length;
     }
 
-    public List<GamePackage> fullGamePackageBoard() {
-        List<GamePackage> gamePackages = new LinkedList<>();
-        for (int i = 0; i < _board.length; i++) {
-            for (int j = 0; j < _board[i].length; j++) {
-                gamePackages.add(new GamePackage(
-                        new Position(i, j),
-                        _colorBoard[i][j],
-                        _board[i][j]));
-            }
-        }
-        return gamePackages;
-    }
 }

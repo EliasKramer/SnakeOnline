@@ -36,10 +36,9 @@ public class ClientGame {
         int height;
         int width;
         try{
-            _ois = new ObjectInputStream(new BufferedInputStream(_client.getInputStream()));
             _oos = new ObjectOutputStream(new BufferedOutputStream(_client.getOutputStream()));
-            _oos.flush();
-            _oos.writeObject(new InputPackage(_client.getInetAddress().toString(), Direction.UP));
+            _ois = new ObjectInputStream(new BufferedInputStream(_client.getInputStream()));
+
             height = _ois.readInt();
             width = _ois.readInt();
         } catch (IOException e) {
@@ -126,6 +125,7 @@ public class ClientGame {
     public void sendInput(Direction direction) {
         try {
             _oos.writeObject(new InputPackage(_client.getInetAddress().toString(), direction));
+            _oos.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
