@@ -1,6 +1,8 @@
 package org.example.Game;
 
-public enum FieldValue {
+import java.io.Serializable;
+
+public enum FieldValue implements Serializable {
     EMPTY("."),
     SNAKE("S"),
     FOOD("*");

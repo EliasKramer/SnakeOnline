@@ -5,8 +5,9 @@ import org.example.Game.FieldValue;
 import org.example.Game.Position;
 
 import java.awt.geom.Point2D;
+import java.io.Serializable;
 
-public class GamePackage {
+public class GamePackage implements Serializable {
     private final Position _position;
     private final Colors _color;
     private final FieldValue _fieldValue;

@@ -100,7 +100,7 @@ public class SnakeGame {
         return emptyFields;
     }
 
-    private List<GamePackage> getPositionChangesForNewUpdate() {
+    public List<GamePackage> getPositionChangesForNewUpdate() {
         LinkedList<GamePackage> gamePackages = new LinkedList<>();
         LinkedList<Snake> snakesToRemove = new LinkedList<>();
         for (Snake snake : _snakes) {
@@ -173,5 +173,26 @@ public class SnakeGame {
     private boolean positionIsOnBoard(Position position) {
         return position.getX() >= 0 && position.getX() < _board.length &&
                 position.getY() >= 0 && position.getY() < _board[0].length;
+    }
+
+    public int getHeight() {
+        return _board[0].length;
+    }
+
+    public int getWidth() {
+        return _board.length;
+    }
+
+    public List<GamePackage> fullGamePackageBoard() {
+        List<GamePackage> gamePackages = new LinkedList<>();
+        for (int i = 0; i < _board.length; i++) {
+            for (int j = 0; j < _board[i].length; j++) {
+                gamePackages.add(new GamePackage(
+                        new Position(i, j),
+                        _colorBoard[i][j],
+                        _board[i][j]));
+            }
+        }
+        return gamePackages;
     }
 }

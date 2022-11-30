@@ -1,6 +1,8 @@
 package org.example.Game;
 
-public enum Colors {
+import java.io.Serializable;
+
+public enum Colors implements Serializable {
     RED("\u001B[31m"),
     GREEN("\u001B[32m"),
     YELLOW("\u001B[33m"),

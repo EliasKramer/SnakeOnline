@@ -1,6 +1,8 @@
 package org.example.Game;
 
-public class Position {
+import java.io.Serializable;
+
+public class Position implements Serializable {
     private int _x;
     private int _y;
 
