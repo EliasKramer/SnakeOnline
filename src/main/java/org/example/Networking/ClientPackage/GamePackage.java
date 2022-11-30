@@ -1,4 +1,4 @@
-package org.example.Networking;
+package org.example.Networking.ClientPackage;
 
 import org.example.Game.Colors;
 import org.example.Game.FieldValue;

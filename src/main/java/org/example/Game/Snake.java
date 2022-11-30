@@ -1,7 +1,7 @@
 package org.example.Game;
 
-import org.example.Networking.GamePackage;
-import org.example.Networking.MovePackage;
+import org.example.Networking.ClientPackage.GamePackage;
+import org.example.Networking.ClientPackage.MovePackage;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -13,7 +13,9 @@ public class Snake {
     private int _savedFood = 0;
     private LinkedList<Position> _body;
 
-    public Snake(Colors color, String name, Direction direction, Position head) {
+    private String _id;
+    public Snake(String id, Colors color, String name, Direction direction, Position head) {
+        _id = id;
         _color = color;
         _name = name;
         _direction = direction;
