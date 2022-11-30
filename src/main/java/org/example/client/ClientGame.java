@@ -1,8 +1,8 @@
 package org.example.client;
 
 import org.example.Game.*;
-import org.example.Networking.GamePackage;
-import org.example.Networking.MovePackage;
+import org.example.Networking.ClientPackage.GamePackage;
+import org.example.Networking.NetworkSettings;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -27,7 +27,7 @@ public class ClientGame {
         System.out.print("Enter the server IP: ");
         String ip = scanner.nextLine();
         try {
-            _client = new Socket(ip, 6969);
+            _client = new Socket(ip, NetworkSettings.PORT);
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("Could not connect to server");
@@ -59,7 +59,6 @@ public class ClientGame {
                 if(_window != null) {
                     _window.repaint();
                 }
-                printBoard();
             }
         });
         t.start();
@@ -117,14 +116,5 @@ public class ClientGame {
 
     public FieldValue[][] getBoard() {
         return _board;
-    }
-
-    public void printBoard() {
-        for (int i = 0; i < _board.length; i++) {
-            for (int j = 0; j < _board[i].length; j++) {
-                System.out.print(_board[i][j].getValue());
-            }
-            System.out.println();
-        }
     }
 }

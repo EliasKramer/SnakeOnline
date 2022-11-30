@@ -125,7 +125,7 @@ public class SnakeGame {
         return emptyFields;
     }
     //this function is not idempotent
-    private List<GamePackage> getPositionChangesForNewUpdate() {
+    public List<GamePackage> getPositionChangesForNewUpdate() {
         LinkedList<GamePackage> gamePackages = new LinkedList<>();
         LinkedList<Snake> snakesToRemove = new LinkedList<>();
         for (Snake snake : _snakes) {

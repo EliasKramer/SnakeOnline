@@ -1,7 +1,7 @@
 package org.example.Server;
 
 import org.example.Game.*;
-import org.example.Networking.GamePackage;
+import org.example.Networking.ClientPackage.GamePackage;
 import org.example.client.ClientWindow;
 import org.example.Networking.ServerPackage.AddUserPackage;
 import org.example.Networking.ServerPackage.InputPackage;
@@ -46,7 +46,7 @@ public class Server extends Thread {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        _clientInputMap = new HashMap<String, InputPackage>();
+        _clientInputMap = new HashMap<>();
 
 
         Thread t = new Thread(() -> {
@@ -55,6 +55,7 @@ public class Server extends Thread {
                     Socket client = _server.accept();
                     System.out.println("Client connected");
                     _clients.add(client);
+
                     try{
                         ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(client.getOutputStream()));
                         _oos.add(oos);
@@ -125,7 +126,7 @@ public class Server extends Thread {
                 //wait for requests
                 DatagramPacket packet = new DatagramPacket(new byte[256], 256);
                 try {
-                    _socket.receive(packet);
+                    //_socket.receive(packet);
                 } catch (Exception e) {
                     throw new RuntimeException("There was an exception while receiving a packet.\n" + e);
                 }
