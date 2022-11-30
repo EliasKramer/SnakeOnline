@@ -2,16 +2,12 @@ package org.example.Server;
 
 import org.example.Game.*;
 import org.example.Networking.ClientPackage.GamePackage;
-import org.example.client.ClientWindow;
 import org.example.Networking.ServerPackage.AddUserPackage;
 import org.example.Networking.ServerPackage.InputPackage;
 
-import java.awt.*;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.time.Instant;
 import java.util.HashMap;
@@ -63,6 +59,7 @@ public class Server extends Thread {
                     Thread clientInputThread = new Thread(() -> {
                         try(ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(client.getInputStream()))) {
                             while(true) {
+                                System.out.println("Listening for packages...");
                                 InputPackage inputPackage = (InputPackage) ois.readObject();
                                 _clientInputMap.put(client.getInetAddress().toString(), inputPackage.getDirection());
                             }
@@ -100,7 +97,6 @@ public class Server extends Thread {
     public void run() {
         long lastTimeUpdated = getCurrentTimeInMs();
         long iterationsBetweenUpdate = 0;
-        _game.updateFood();
         _game.printBoard();
         while (_running) {
             final long currTime = getCurrentTimeInMs();
@@ -114,7 +110,6 @@ public class Server extends Thread {
                 }
 
                 System.out.println("game update. iterationsBetween: " + iterationsBetweenUpdate);
-                _game.updateFood();
                 //_game.processNextUpdate();
                 List<GamePackage> gamePackages = _game.getPositionChangesForNewUpdate();
                 for(ObjectOutputStream oos : _oos) {

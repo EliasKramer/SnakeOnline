@@ -80,11 +80,12 @@ public class SnakeGame {
         }
     }
 
-    public void updateFood() {
+    public GamePackage updateFood() {
         if (foodIsEaten()) {
             _foodPosition = getRandomEmptyPosition();
-            setValueAtPosition(new GamePackage(_foodPosition, _foodColor, FieldValue.FOOD));
+            return new GamePackage(_foodPosition, _foodColor, FieldValue.FOOD);
         }
+        return null;
     }
 
     public List<GamePackage> getBoardInGamePackages() {
@@ -145,6 +146,12 @@ public class SnakeGame {
     //this function is not idempotent
     public List<GamePackage> getPositionChangesForNewUpdate() {
         LinkedList<GamePackage> gamePackages = new LinkedList<>();
+
+        GamePackage newFoodLocation = updateFood();
+        if(newFoodLocation != null) {
+            gamePackages.add(newFoodLocation);
+        }
+
         for (Snake snake : _snakes) {
             MovePackage movePackage = snake.getNextMovePackage();
 
