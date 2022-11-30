@@ -38,6 +38,8 @@ public class ClientGame {
         try{
             _ois = new ObjectInputStream(new BufferedInputStream(_client.getInputStream()));
             _oos = new ObjectOutputStream(new BufferedOutputStream(_client.getOutputStream()));
+            _oos.flush();
+            _oos.writeObject(new InputPackage(_client.getInetAddress().toString(), Direction.UP));
             height = _ois.readInt();
             width = _ois.readInt();
         } catch (IOException e) {

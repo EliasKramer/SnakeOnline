@@ -77,6 +77,7 @@ public class Server extends Thread {
 
                     try{
                         ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(client.getOutputStream()));
+                        oos.flush();
                         _oos.add(oos);
                         oos.writeInt(_game.getHeight());
                         oos.writeInt(_game.getWidth());
