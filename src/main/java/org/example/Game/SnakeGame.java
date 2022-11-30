@@ -46,8 +46,8 @@ public class SnakeGame {
         System.out.println(sb.toString());
     }
 
-    public void addSnake(Colors givenColor, String givenName) {
-        Snake snake = new Snake(givenColor, givenName, Direction.RIGHT, getRandomEmptyPosition());
+    public void addSnake(String id, Colors givenColor, String givenName) {
+        Snake snake = new Snake(id, givenColor, givenName, Direction.RIGHT, getRandomEmptyPosition());
         //TODO add system to not face wall when spawned
         _snakes.add(snake);
         GamePackage add = new GamePackage(
@@ -55,6 +55,16 @@ public class SnakeGame {
                 snake.getColor(),
                 FieldValue.SNAKE);
         processGamePackage(add);
+    }
+
+    public void setSnakeDirection(String id, Direction givenDirection) {
+        for (Snake snake : _snakes) {
+            if (snake.getId().equals(id)) {
+                System.out.println("snake found setting direction to " + givenDirection);
+                snake.setDirection(givenDirection);
+                break;
+            }
+        }
     }
 
     public void processNextUpdate() {
