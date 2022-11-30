@@ -2,7 +2,7 @@ package org.example.Networking.ServerPackage;
 
 import org.example.Server.Server;
 
-public class AddUserPackage implements ServerPackage {
+public class AddUserPackage {
     private final String _userId;
 
     public AddUserPackage(String userId) {
@@ -14,7 +14,9 @@ public class AddUserPackage implements ServerPackage {
     }
 
     @Override
-    public void executeOnServer(Server server) {
-        server.handleAddUserPackage(this);
+    public String toString() {
+        return "AddUserPackage{" +
+                "_userId='" + _userId + '\'' +
+                '}';
     }
 }
