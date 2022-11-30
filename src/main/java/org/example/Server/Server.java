@@ -129,6 +129,7 @@ public class Server extends Thread {
                         e.printStackTrace();
                     }
                 }
+                _game.processGamePackages(gamePackages);
                 _game.printBoard();
                 lastTimeUpdated = currTime;
                 iterationsBetweenUpdate = 0;
