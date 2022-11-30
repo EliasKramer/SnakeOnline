@@ -29,4 +29,13 @@ public class GamePackage implements Serializable {
     public FieldValue getFieldValue() {
         return _fieldValue;
     }
+
+    @Override
+    public String toString() {
+        return "GamePackage{" +
+                "_position=" + _position +
+                ", _color=" + _color +
+                ", _fieldValue=" + _fieldValue +
+                '}';
+    }
 }

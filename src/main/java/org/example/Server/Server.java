@@ -64,6 +64,7 @@ public class Server extends Thread {
                         try(ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(client.getInputStream()))) {
                             while(true) {
                                 InputPackage inputPackage = (InputPackage) ois.readObject();
+                                System.out.println("Received input package: " + inputPackage);
                                 _clientInputMap.put(inputPackage.getUserId(), inputPackage);
                             }
                         }catch(SocketException e) {
@@ -130,7 +131,7 @@ public class Server extends Thread {
                     }
                 }
                 _game.processGamePackages(gamePackages);
-                _game.printBoard();
+                //_game.printBoard();
                 lastTimeUpdated = currTime;
                 iterationsBetweenUpdate = 0;
                 _clientInputMap.clear();

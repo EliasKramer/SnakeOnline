@@ -125,6 +125,9 @@ public class ClientGame {
 
     public void sendInput(Direction direction) {
         try {
+            System.out.println("Sending input");
+            InputPackage inputPackage = new InputPackage(_client.getInetAddress().toString(), direction);
+            System.out.println("input package "+ inputPackage);
             _oos.writeObject(new InputPackage(_client.getInetAddress().toString(), direction));
         } catch (IOException e) {
             e.printStackTrace();
