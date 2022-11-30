@@ -27,6 +27,10 @@ public class Snake {
         return _body.getFirst();
     }
 
+    public String getId() {
+        return _id;
+    }
+
     public Colors getColor() {
         return _color;
     }

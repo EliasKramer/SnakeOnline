@@ -3,13 +3,13 @@ package org.example.Networking.ServerPackage;
 import org.example.Server.Server;
 
 public class AddUserPackage implements ServerPackage {
-    private final int _userId;
+    private final String _userId;
 
-    public AddUserPackage(int userId) {
+    public AddUserPackage(String userId) {
         _userId = userId;
     }
 
-    public int getUserId() {
+    public String getUserId() {
         return _userId;
     }
 
