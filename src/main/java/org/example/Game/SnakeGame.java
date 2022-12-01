@@ -52,7 +52,6 @@ public class SnakeGame {
 
         System.out.println(sb.toString());
     }
-
     public void addSnake(String id, Color givenColor, String givenName) {
         Snake snake = new Snake(id, givenColor, givenName, Direction.RIGHT, getRandomEmptyPosition());
         //TODO add system to not face wall when spawned
@@ -73,7 +72,6 @@ public class SnakeGame {
             }
         }
     }
-
     //calculates next update and returns all position changes
     public List<GamePackage> nextUpdate() {
         List<GamePackage> gamePackages = getPositionChangesForNewUpdate();
@@ -117,6 +115,19 @@ public class SnakeGame {
             }
         }
     }
+    public FieldValue getValueAtPosition(Position position) {
+        if (positionIsOnBoard(position)) {
+            return _board[position.getX()][position.getY()];
+        }
+        throw new IllegalArgumentException("Position is not on board. Cannot get value");
+    }
+    public Color getColorAtPosition(Position position) {
+        if(positionIsOnBoard(position)) {
+            return _colorBoard[position.getX()][position.getY()];
+        }
+        throw new IllegalArgumentException("Position is not on board. Cannot get color");
+    }
+
     private boolean foodIsEaten() {
         return _foodPosition == null;
     }
@@ -190,14 +201,6 @@ public class SnakeGame {
     private boolean positionCollidesWithFood(Position nextHeadPos) {
         return !foodIsEaten() && nextHeadPos.equals(_foodPosition);
     }
-
-    private FieldValue getValueAtPosition(Position position) {
-        if (positionIsOnBoard(position)) {
-            return _board[position.getX()][position.getY()];
-        }
-        throw new IllegalArgumentException("Position is not on board");
-    }
-
     private void setValueAtPosition(GamePackage gamePackage) {
         if (positionIsOnBoard(gamePackage.getPosition())) {
             _board

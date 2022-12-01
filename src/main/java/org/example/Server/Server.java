@@ -145,8 +145,10 @@ public class Server extends Thread {
             throw new IllegalArgumentException(givenPackage.getUserId()+" already exists and cannot be added again");
         }
         _clientInputMap.put(givenPackage.getUserId(), null);
-        //TODO add color
-        _game.addSnake(givenPackage.getUserId(), Color.green, "Snake name");
+
+        //random color
+        Color color = new Color((int)(Math.random()*0x1000000));
+        _game.addSnake(givenPackage.getUserId(),color, "Snake name");
     }
 
     private long getCurrentTimeInMs() {

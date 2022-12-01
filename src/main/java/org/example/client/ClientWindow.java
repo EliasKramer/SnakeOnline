@@ -12,16 +12,16 @@ public class ClientWindow extends JFrame {
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
             ClientGame clientGame = new ClientGame();
-            ClientWindow m = new ClientWindow(clientGame.getBoard());
+            ClientWindow m = new ClientWindow(clientGame.getGame());
             clientGame.setWindow(m);
             m.setVisible(true);
         });
     }
 
-    public ClientWindow(FieldValue[][] game) {
+    public ClientWindow(SnakeGame game) {
         initUI(game);
     }
-    private void initUI(FieldValue[][] game) {
+    private void initUI(SnakeGame game) {
         setBackground(Color.BLACK);
         add(new Renderer(game));
         setSize(600, 600);
