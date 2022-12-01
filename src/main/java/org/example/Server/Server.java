@@ -21,7 +21,7 @@ public class Server extends Thread {
     private final SnakeGame _game;
     private boolean _running = true;
     //new game state every 1000ms
-    private final long _stateUpdateCycle = 500;
+    private final long _stateUpdateCycle = 300;
 
     ServerSocket _server;
 
@@ -35,7 +35,7 @@ public class Server extends Thread {
     public Server(String givenName, int givenPort) {
         _name = givenName;
         _port = givenPort;
-        _game = new SnakeGame(10, 10);
+        _game = new SnakeGame(40,20);
         try {
             _server = new ServerSocket(6969);
         } catch (IOException e) {
@@ -98,7 +98,9 @@ public class Server extends Thread {
     public void run() {
         long lastTimeUpdated = getCurrentTimeInMs();
         long iterationsBetweenUpdate = 0;
+        long updateCounter = 0;
         _game.printBoard();
+        System.out.println("height: " + _game.getHeight() + " width: " + _game.getWidth());
         while (_running) {
             final long currTime = getCurrentTimeInMs();
             final long timeSinceLastUpdate = currTime - lastTimeUpdated;
@@ -109,8 +111,7 @@ public class Server extends Thread {
                         _game.setSnakeDirection(userId, _clientInputMap.get(userId));
                     }
                 }
-
-                System.out.println("game update. iterationsBetween: " + iterationsBetweenUpdate);
+                //System.out.println("game update. iterationsBetween: " + iterationsBetweenUpdate);
 
                 List<GamePackage> gamePackages = _game.nextUpdate();
                 for(ObjectOutputStream oos : _oos) {
@@ -128,6 +129,10 @@ public class Server extends Thread {
                 lastTimeUpdated = currTime;
                 iterationsBetweenUpdate = 0;
                 _clientInputMap.clear();
+                if(updateCounter % 2 == 0) {
+                    _game.printBoard();
+                }
+                updateCounter++;
             } else {
                 //do nothing
                 //inputs are handled in a separate thread

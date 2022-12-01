@@ -38,4 +38,12 @@ public class Position implements Serializable {
                         ((Position) obj)._x == _x &&
                         ((Position) obj)._y == _y;
     }
+
+    @Override
+    public String toString() {
+        return "Position{" +
+                "_x=" + _x +
+                ", _y=" + _y +
+                '}';
+    }
 }

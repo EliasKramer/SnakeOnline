@@ -35,7 +35,7 @@ public class GamePackage implements Serializable {
     @Override
     public String toString() {
         return "GamePackage{" +
-                "_position=" + _position +
+                "_position=" + _position.toString() +
                 ", _color=" + _color +
                 ", _fieldValue=" + _fieldValue +
                 '}';

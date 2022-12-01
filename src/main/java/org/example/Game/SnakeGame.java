@@ -15,24 +15,23 @@ public class SnakeGame {
     private Position _foodPosition;
     private List<Snake> _deadSnakes;
     private List<Snake> _snakesToRemove;
-    private Color _noFieldColor = Color.white;
+    private Color _noFieldColor;
     public SnakeGame(int size) {
         this(size, size);
     }
 
-    public SnakeGame(int width, int height) {
-        _board = new FieldValue[width][height];
-        _colorBoard = new Color[width][height];
+    public SnakeGame(int x, int y) {
+        _board = new FieldValue[x][y];
+        _colorBoard = new Color[x][y];
         _snakes = new LinkedList<>();
         _deadSnakes = new LinkedList<>();
         _snakesToRemove = new LinkedList<>();
         _foodPosition = null;
         _foodColor = Color.CYAN;
-
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                _board[i][j] = FieldValue.EMPTY;
-                _colorBoard[i][j] = _noFieldColor;
+        _noFieldColor = ColorManager.getInstance().getEnvironmentColor();
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < y; j++) {
+                setValueAtPosition(new GamePackage(new Position(i,j), _noFieldColor, FieldValue.EMPTY));
             }
         }
     }
@@ -40,17 +39,17 @@ public class SnakeGame {
     public void printBoard() {
         StringBuilder sb = new StringBuilder();
 
-        for (int i = 0; i < _board.length; i++) {
-            for (int j = 0; j < _board[i].length; j++) {
-                sb.append(ColorManager.getInstance().getColor(_colorBoard[j][i]));
-                sb.append(_board[j][i].getValue());
+        for (int i = 0; i < getHeight(); i++) {
+            for (int j = 0; j < getWidth(); j++) {
+                //sb.append(ColorManager.getInstance().getco getColorAtPosition(new Position(i, j)));
+                sb.append(getValueAtPosition(new Position(j, i)).getValue());
                 sb.append(" ");
-                sb.append(ColorManager.getInstance().getResetColor());
+                //sb.append(ColorManager.getInstance().getResetColor());
             }
             sb.append("\n");
         }
 
-        System.out.println(sb.toString());
+        System.out.println(sb);
     }
     public void addSnake(String id, Color givenColor, String givenName) {
         Snake snake = new Snake(id, givenColor, givenName, Direction.RIGHT, getRandomEmptyPosition());
@@ -89,9 +88,11 @@ public class SnakeGame {
 
     public List<GamePackage> getBoardInGamePackages() {
         List<GamePackage> gamePackages = new LinkedList<>();
-        for (int i = 0; i < _board.length; i++) {
-            for (int j = 0; j < _board[i].length; j++) {
-                gamePackages.add(new GamePackage(new Position(i, j), _colorBoard[i][j], _board[i][j]));
+        for (int i = 0; i < getWidth(); i++) {
+            for (int j = 0; j < getHeight(); j++) {
+                GamePackage curr = new GamePackage(new Position(i, j), _colorBoard[i][j], _board[i][j]);
+                System.out.println("curr packaging "+curr);
+                gamePackages.add(curr);
             }
         }
         return gamePackages;
@@ -145,8 +146,8 @@ public class SnakeGame {
 
     private List<Position> getEmptyFields() {
         List<Position> emptyFields = new LinkedList<>();
-        for (int i = 0; i < _board.length; i++) {
-            for (int j = 0; j < _board[i].length; j++) {
+        for (int i = 0; i < getWidth(); i++) {
+            for (int j = 0; j < getHeight(); j++) {
                 if (_board[i][j] == FieldValue.EMPTY) {
                     emptyFields.add(new Position(i, j));
                 }
@@ -226,8 +227,8 @@ public class SnakeGame {
     }
 
     private boolean positionIsOnBoard(Position position) {
-        return position.getX() >= 0 && position.getX() < _board.length &&
-                position.getY() >= 0 && position.getY() < _board[0].length;
+        return position.getX() >= 0 && position.getX() < getWidth() &&
+                position.getY() >= 0 && position.getY() < getHeight();
     }
 
     public int getHeight() {

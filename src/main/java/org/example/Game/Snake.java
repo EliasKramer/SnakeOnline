@@ -13,7 +13,6 @@ public class Snake {
     private Direction _direction;
     private int _savedFood = 0;
     private LinkedList<Position> _body;
-
     private String _id;
     public Snake(String id, Color color, String name, Direction direction, Position head) {
         _id = id;

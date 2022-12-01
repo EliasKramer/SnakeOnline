@@ -25,11 +25,11 @@ public class Renderer extends JPanel {
         g2.setFont(new Font("Calibri", Font.PLAIN, /*(int)dim*/20));
         g2.setColor(Color.LIGHT_GRAY);
 
-        for (int i = 0; i < snakeGame.getHeight(); i++) {
-            for (int j = 0; j < snakeGame.getWidth(); j++) {
-                g2.setColor(snakeGame.getColorAtPosition(new Position(i, j)));
-                g2.drawString(snakeGame.getValueAtPosition(new Position(i,j)).getValue(),
-                        (int)(i*dim) + (int)(dim*0.3), (int)(j*dim) + (int)(dim*1.2));
+        for (int y = 0; y < snakeGame.getHeight(); y++) {
+            for (int x = 0; x < snakeGame.getWidth(); x++) {
+                g2.setColor(snakeGame.getColorAtPosition(new Position(x, y)));
+                g2.drawString(snakeGame.getValueAtPosition(new Position(x,y)).getValue(),
+                        (int)(x*dim) + (int)(dim*0.3), (int)(y*dim) + (int)(dim*1.2));
             }
         }
     }

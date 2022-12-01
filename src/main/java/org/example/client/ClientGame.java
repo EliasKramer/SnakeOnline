@@ -41,7 +41,8 @@ public class ClientGame {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        _snakeGame = new SnakeGame(width, height);
+        System.out.println("initializing game with width: " + width + " and height: " + height);
+        _snakeGame = new SnakeGame(width,height);
         /*
         _board = new FieldValue[width][height];
         _colorBoard = new Colors[width][height];
@@ -77,6 +78,10 @@ public class ClientGame {
     public void processNextUpdate() {
         try {
             List<GamePackage> gamePackages = (List<GamePackage>) _ois.readObject();
+            for (GamePackage gamePackage : gamePackages) {
+                 System.out.println("processing game package");
+                System.out.println(gamePackage);
+            }
             _snakeGame.processGamePackages(gamePackages);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
