@@ -5,6 +5,7 @@ import org.example.Networking.ClientPackage.GamePackage;
 import org.example.Networking.ServerPackage.AddUserPackage;
 import org.example.Networking.ServerPackage.InputPackage;
 
+import java.awt.*;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -110,8 +111,8 @@ public class Server extends Thread {
                 }
 
                 System.out.println("game update. iterationsBetween: " + iterationsBetweenUpdate);
-                //_game.processNextUpdate();
-                List<GamePackage> gamePackages = _game.getPositionChangesForNewUpdate();
+
+                List<GamePackage> gamePackages = _game.nextUpdate();
                 for(ObjectOutputStream oos : _oos) {
                     try{
                         oos.writeObject(gamePackages);
@@ -123,7 +124,6 @@ public class Server extends Thread {
                         e.printStackTrace();
                     }
                 }
-                _game.processGamePackages(gamePackages);
                 //_game.printBoard();
                 lastTimeUpdated = currTime;
                 iterationsBetweenUpdate = 0;
@@ -146,7 +146,7 @@ public class Server extends Thread {
         }
         _clientInputMap.put(givenPackage.getUserId(), null);
         //TODO add color
-        _game.addSnake(givenPackage.getUserId(), Colors.GREEN, "Snake name");
+        _game.addSnake(givenPackage.getUserId(), Color.green, "Snake name");
     }
 
     private long getCurrentTimeInMs() {

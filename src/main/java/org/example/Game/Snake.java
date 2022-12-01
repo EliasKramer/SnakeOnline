@@ -3,18 +3,19 @@ package org.example.Game;
 import org.example.Networking.ClientPackage.GamePackage;
 import org.example.Networking.ClientPackage.MovePackage;
 
+import java.awt.*;
 import java.util.LinkedList;
 import java.util.List;
 
 public class Snake {
-    private final Colors _color;
+    private final Color _color;
     private final String _name;
     private Direction _direction;
     private int _savedFood = 0;
     private LinkedList<Position> _body;
 
     private String _id;
-    public Snake(String id, Colors color, String name, Direction direction, Position head) {
+    public Snake(String id, Color color, String name, Direction direction, Position head) {
         _id = id;
         _color = color;
         _name = name;
@@ -31,7 +32,7 @@ public class Snake {
         return _id;
     }
 
-    public Colors getColor() {
+    public Color getColor() {
         return _color;
     }
 
@@ -49,10 +50,7 @@ public class Snake {
         }
 
         //if the snake has not eaten food, it will remove the tail
-        GamePackage remove = new GamePackage(
-                _body.getLast(),
-                Colors.RESET,
-                FieldValue.EMPTY);
+        GamePackage remove = GamePackage.getEmptyPackage(_body.getLast());
 
         return new MovePackage(add, remove);
     }
@@ -76,7 +74,7 @@ public class Snake {
         //remove the snake from the board
         LinkedList<GamePackage> gamePackages = new LinkedList<>();
         for (Position position : _body) {
-            gamePackages.add(new GamePackage(position, Colors.RESET, FieldValue.EMPTY));
+            gamePackages.add(GamePackage.getEmptyPackage(position));
         }
         return gamePackages;
     }

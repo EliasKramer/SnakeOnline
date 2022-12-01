@@ -22,6 +22,7 @@ public class ClientGame {
 
     private ObjectInputStream _ois;
     private ObjectOutputStream _oos;
+
     public ClientGame() {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter the server IP: ");
@@ -30,12 +31,12 @@ public class ClientGame {
             _client = new Socket(ip, NetworkSettings.PORT);
         } catch (IOException e) {
             e.printStackTrace();
-            throw   new RuntimeException("Could not connect to server");
+            throw new RuntimeException("Could not connect to server");
         }
 
         int height;
         int width;
-        try{
+        try {
             _oos = new ObjectOutputStream(new BufferedOutputStream(_client.getOutputStream()));
             _ois = new ObjectInputStream(new BufferedInputStream(_client.getInputStream()));
 
@@ -44,7 +45,7 @@ public class ClientGame {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
+        /*
         _board = new FieldValue[width][height];
         _colorBoard = new Colors[width][height];
 
@@ -54,11 +55,11 @@ public class ClientGame {
                 _colorBoard[i][j] = Colors.RESET;
             }
         }
-
+        */
         Thread t = new Thread(() -> {
-            while(true) {
+            while (true) {
                 processNextUpdate();
-                if(_window != null) {
+                if (_window != null) {
                     _window.repaint();
                 }
             }
@@ -71,9 +72,9 @@ public class ClientGame {
     public void setWindow(ClientWindow window) {
         _window = window;
     }
-
+    /*
     public void processNextUpdate() {
-        try{
+        try {
             List<GamePackage> gamePackages = (List<GamePackage>) _ois.readObject();
             for (GamePackage curr : gamePackages) {
                 processGamePackage(curr);
@@ -82,6 +83,7 @@ public class ClientGame {
             e.printStackTrace();
         }
     }
+
     private void processGamePackage(GamePackage gamePackage) {
         setValueAtPosition(gamePackage);
     }
@@ -121,12 +123,12 @@ public class ClientGame {
     public FieldValue[][] getBoard() {
         return _board;
     }
-
+    */
     public void sendInput(Direction direction) {
         try {
             System.out.println("Sending input");
             InputPackage inputPackage = new InputPackage(_client.getInetAddress().toString(), direction);
-            System.out.println("input package "+ inputPackage);
+            System.out.println("input package " + inputPackage);
             _oos.writeObject(new InputPackage(_client.getInetAddress().toString(), direction));
             _oos.flush();
         } catch (IOException e) {

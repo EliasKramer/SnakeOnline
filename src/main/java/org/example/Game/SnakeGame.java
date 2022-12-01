@@ -3,35 +3,36 @@ package org.example.Game;
 import org.example.Networking.ClientPackage.GamePackage;
 import org.example.Networking.ClientPackage.MovePackage;
 
+import java.awt.*;
 import java.util.LinkedList;
 import java.util.List;
 
 public class SnakeGame {
     private FieldValue[][] _board;
-    private Colors[][] _colorBoard;
+    private Color[][] _colorBoard;
     private LinkedList<Snake> _snakes;
-    private Colors _foodColor;
+    private Color _foodColor;
     private Position _foodPosition;
     private List<Snake> _deadSnakes;
     private List<Snake> _snakesToRemove;
-
+    private Color _noFieldColor = Color.white;
     public SnakeGame(int size) {
         this(size, size);
     }
 
     public SnakeGame(int width, int height) {
         _board = new FieldValue[width][height];
-        _colorBoard = new Colors[width][height];
+        _colorBoard = new Color[width][height];
         _snakes = new LinkedList<>();
         _deadSnakes = new LinkedList<>();
         _snakesToRemove = new LinkedList<>();
         _foodPosition = null;
-        _foodColor = Colors.CYAN;
+        _foodColor = Color.CYAN;
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 _board[i][j] = FieldValue.EMPTY;
-                _colorBoard[i][j] = Colors.RESET;
+                _colorBoard[i][j] = _noFieldColor;
             }
         }
     }
@@ -41,10 +42,10 @@ public class SnakeGame {
 
         for (int i = 0; i < _board.length; i++) {
             for (int j = 0; j < _board[i].length; j++) {
-                sb.append(_colorBoard[j][i].getValue());
+                sb.append(ColorManager.getInstance().getColor(_colorBoard[j][i]));
                 sb.append(_board[j][i].getValue());
                 sb.append(" ");
-                sb.append(Colors.RESET.getValue());
+                sb.append(ColorManager.getInstance().getResetColor());
             }
             sb.append("\n");
         }
@@ -52,7 +53,7 @@ public class SnakeGame {
         System.out.println(sb.toString());
     }
 
-    public void addSnake(String id, Colors givenColor, String givenName) {
+    public void addSnake(String id, Color givenColor, String givenName) {
         Snake snake = new Snake(id, givenColor, givenName, Direction.RIGHT, getRandomEmptyPosition());
         //TODO add system to not face wall when spawned
         _snakes.add(snake);
@@ -73,11 +74,11 @@ public class SnakeGame {
         }
     }
 
-    public void processNextUpdate() {
+    //calculates next update and returns all position changes
+    public List<GamePackage> nextUpdate() {
         List<GamePackage> gamePackages = getPositionChangesForNewUpdate();
-        for (GamePackage curr : gamePackages) {
-            processGamePackage(curr);
-        }
+        processGamePackages(gamePackages);
+        return gamePackages;
     }
 
     public GamePackage updateFood() {
