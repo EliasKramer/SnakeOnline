@@ -8,6 +8,7 @@ import org.example.Networking.ServerPackage.InputPackage;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -20,9 +21,9 @@ public class ClientGame {
     private ObjectOutputStream _oos;
 
     public ClientGame() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter the server IP: ");
-        String ip = scanner.nextLine();
+        //Scanner scanner = new Scanner(System.in);
+        //System.out.print("Enter the server IP: ");
+        String ip = "localhost";// scanner.nextLine();
         try {
             _client = new Socket(ip, NetworkSettings.PORT);
         } catch (IOException e) {
@@ -77,12 +78,12 @@ public class ClientGame {
 
     public void processNextUpdate() {
         try {
-            List<GamePackage> gamePackages = (List<GamePackage>) _ois.readObject();
+            GamePackage[] gamePackages = (GamePackage[]) _ois.readObject();
             for (GamePackage gamePackage : gamePackages) {
                  System.out.println("processing game package");
                 System.out.println(gamePackage);
             }
-            _snakeGame.processGamePackages(gamePackages);
+            _snakeGame.processGamePackages(Arrays.stream(gamePackages).toList());
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }

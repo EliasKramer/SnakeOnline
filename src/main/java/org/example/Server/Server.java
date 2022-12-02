@@ -116,7 +116,7 @@ public class Server extends Thread {
                 List<GamePackage> gamePackages = _game.nextUpdate();
                 for(ObjectOutputStream oos : _oos) {
                     try{
-                        oos.writeObject(gamePackages);
+                        oos.writeObject(gamePackages.toArray());
                         oos.flush();
                     } catch(SocketException e) {
                         System.out.println("Client disconnected");
