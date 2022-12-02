@@ -24,7 +24,7 @@ public class ClientWindow extends JFrame {
     private void initUI(SnakeGame game) {
         setBackground(Color.BLACK);
         add(new Renderer(game));
-        setSize(600, 600);
+        setSize(800, 800);
         setTitle("Snake");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
