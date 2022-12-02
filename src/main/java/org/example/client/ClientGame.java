@@ -8,6 +8,7 @@ import org.example.Networking.ServerPackage.InputPackage;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -77,7 +78,12 @@ public class ClientGame {
 
     public void processNextUpdate() {
         try {
-            List<GamePackage> gamePackages = (List<GamePackage>) _ois.readObject();
+            Object[] objects = (Object[]) _ois.readObject();
+            List<GamePackage> gamePackages = new LinkedList<>();
+            for (Object o : objects) {
+                System.out.println(o);
+                gamePackages.add((GamePackage) o);
+            }
             for (GamePackage gamePackage : gamePackages) {
                  System.out.println("processing game package");
                 System.out.println(gamePackage);
