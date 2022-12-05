@@ -11,17 +11,17 @@ import java.awt.*;
 public class ClientWindow extends JFrame {
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
-            ClientGame clientGame = new ClientGame();
-            ClientWindow m = new ClientWindow(clientGame.getGame());
+            ClientGame clientGame = new ClientGame(10, 10);
+            ClientWindow m = new ClientWindow(clientGame);
             clientGame.setWindow(m);
             m.setVisible(true);
         });
     }
 
-    public ClientWindow(SnakeGame game) {
+    public ClientWindow(ClientGame game) {
         initUI(game);
     }
-    private void initUI(SnakeGame game) {
+    private void initUI(ClientGame game) {
         setBackground(Color.BLACK);
         add(new Renderer(game));
         setSize(800, 800);

@@ -46,4 +46,8 @@ public class Position implements Serializable {
                 ", _y=" + _y +
                 '}';
     }
+
+    public static Position Add(Position a, Position b) {
+        return new Position(a._x + b._x, a._y + b._y);
+    }
 }

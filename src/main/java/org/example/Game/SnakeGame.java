@@ -4,6 +4,7 @@ import org.example.Networking.ClientPackage.GamePackage;
 import org.example.Networking.ClientPackage.MovePackage;
 
 import java.awt.*;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 

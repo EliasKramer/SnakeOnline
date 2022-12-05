@@ -47,6 +47,9 @@ public class InputListener implements NativeKeyListener {
         } else if (keyText.equals("D") || keyText.equals("Right")) {
             System.out.println("RIGHT");
             _client.sendInput(Direction.RIGHT);
+        } else if (keyText.equals("R")) {
+            System.out.println("RESTART");
+            _client.sendRestart();
         }
     }
 

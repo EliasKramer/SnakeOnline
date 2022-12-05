@@ -4,14 +4,15 @@ import org.example.Game.FieldValue;
 import org.example.Game.Position;
 import org.example.Game.Snake;
 import org.example.Game.SnakeGame;
+import org.example.client.ClientGame;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class Renderer extends JPanel {
-    private final SnakeGame snakeGame;
-    public Renderer(SnakeGame snakeGame) {
-        this.snakeGame = snakeGame;
+    private final ClientGame clientGame;
+    public Renderer(ClientGame clientGame) {
+        this.clientGame = clientGame;
     }
 
     @Override
@@ -25,10 +26,10 @@ public class Renderer extends JPanel {
         g2.setFont(new Font("Calibri", Font.PLAIN, /*(int)dim*/20));
         g2.setColor(Color.LIGHT_GRAY);
 
-        for (int y = 0; y < snakeGame.getHeight(); y++) {
-            for (int x = 0; x < snakeGame.getWidth(); x++) {
-                g2.setColor(snakeGame.getColorAtPosition(new Position(x, y)));
-                g2.drawString(snakeGame.getValueAtPosition(new Position(x,y)).getValue(),
+        for (int y = 0; y < clientGame.getHeight(); y++) {
+            for (int x = 0; x < clientGame.getWidth(); x++) {
+                g2.setColor(clientGame.getColorAtPosition(new Position(x, y)));
+                g2.drawString(clientGame.getValueAtPosition(new Position(x,y)).getValue(),
                         (int)(x*dim) + (int)(dim*0.3), (int)(y*dim) + (int)(dim*1.2));
             }
         }

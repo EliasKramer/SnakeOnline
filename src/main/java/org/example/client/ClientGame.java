@@ -6,6 +6,7 @@ import org.example.Networking.ClientPackage.GamePackage;
 import org.example.Networking.NetworkSettings;
 import org.example.Networking.ServerPackage.InputPackage;
 
+import java.awt.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.LinkedList;
@@ -18,11 +19,17 @@ public class ClientGame {
     private ClientWindow _window;
     private ObjectInputStream _ois;
     private ObjectOutputStream _oos;
+    private int _width;
+    private int _height;
 
-    public ClientGame() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter the server IP: ");
-        String ip = scanner.nextLine();
+    private Position _snakeHeadPosition;
+
+    public ClientGame(int width, int height) {
+        _width = width;
+        _height = height;
+        //Scanner scanner = new Scanner(System.in);
+        //System.out.print("Enter the server IP: ");
+        String ip = "localhost";// scanner.nextLine();
         try {
             _client = new Socket(ip, NetworkSettings.PORT);
         } catch (IOException e) {
@@ -30,8 +37,6 @@ public class ClientGame {
             throw new RuntimeException("Could not connect to server");
         }
 
-        int height;
-        int width;
         try {
             _oos = new ObjectOutputStream(new BufferedOutputStream(_client.getOutputStream()));
             _ois = new ObjectInputStream(new BufferedInputStream(_client.getInputStream()));
@@ -78,14 +83,13 @@ public class ClientGame {
     public void processNextUpdate() {
         try {
             Object[] objects = (Object[]) _ois.readObject();
+            int posX = _ois.readInt();
+            int posY = _ois.readInt();
+            _snakeHeadPosition = new Position(posX, posY);
             List<GamePackage> gamePackages = new LinkedList<>();
             for (Object o : objects) {
-                System.out.println(o);
+                //System.out.println(o);
                 gamePackages.add((GamePackage) o);
-            }
-            for (GamePackage gamePackage : gamePackages) {
-                 System.out.println("processing game package");
-                System.out.println(gamePackage);
             }
             _snakeGame.processGamePackages(gamePackages);
         } catch (IOException | ClassNotFoundException e) {
@@ -143,5 +147,45 @@ public class ClientGame {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void sendRestart() {
+
+    }
+
+    public SnakeGame getSnakeGame() {
+        return _snakeGame;
+    }
+
+    public int getHeight() {
+        return _height;
+    }
+
+    public int getWidth() {
+        return _width;
+    }
+
+    public Color getColorAtPosition(Position position) {
+        if(_snakeHeadPosition == null) return Color.BLACK;
+        Position actualPosition = getClippedPosition(position, _snakeHeadPosition);
+        return _snakeGame.getColorAtPosition(actualPosition);
+    }
+
+    private Position getClippedPosition(Position position, Position snakeHeadPosition) {
+        return Position.Add(getTopLeft(snakeHeadPosition), position);
+    }
+
+    private Position getTopLeft(Position snakeHeadPosition) {
+        int x = Math.min(Math.max(snakeHeadPosition.getX(), _width/2), _snakeGame.getWidth() - _width/2);
+        int y = Math.min(Math.max(snakeHeadPosition.getY(), _height/2), _snakeGame.getHeight() - _height/2);
+        x -= _width/2;
+        y -= _height/2;
+        return new Position(x, y);
+    }
+
+    public FieldValue getValueAtPosition(Position position) {
+        if(_snakeHeadPosition == null) return FieldValue.EMPTY;
+        Position actualPosition = getClippedPosition(position, _snakeHeadPosition);
+        return _snakeGame.getValueAtPosition(actualPosition);
     }
 }

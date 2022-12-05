@@ -17,7 +17,6 @@ public class ServerClient {
     private final String _id;
     private final Server _server;
     private ObjectOutputStream _oos;
-    private ObjectInputStream _ois;
     private final Socket _socket;
     private Snake _snake;
     public ServerClient(String id, Socket socket, Server server, SnakeGame game, Snake snake) {
@@ -69,6 +68,8 @@ public class ServerClient {
             _oos.writeInt(game.getWidth());
             _oos.flush();
             _oos.writeObject(game.getBoardInGamePackages().toArray());
+            _oos.writeInt(_snake.getHead().getX());
+            _oos.writeInt(_snake.getHead().getY());
             _oos.flush();
         } catch (IOException e) {
             e.printStackTrace();
@@ -86,6 +87,8 @@ public class ServerClient {
     {
         try {
             _oos.writeObject(gamePackages.toArray());
+            _oos.writeInt(_snake.getHead().getX());
+            _oos.writeInt(_snake.getHead().getY());
             _oos.flush();
         } catch (SocketException e) {
             System.out.println("Client disconnected");
