@@ -13,9 +13,7 @@ public class Snake {
     private Direction _direction;
     private int _savedFood = 0;
     private LinkedList<Position> _body;
-    private String _id;
-    public Snake(String id, Color color, String name, Direction direction, Position head) {
-        _id = id;
+    public Snake(Color color, String name, Direction direction, Position head) {
         _color = color;
         _name = name;
         _direction = direction;
@@ -26,11 +24,6 @@ public class Snake {
     public Position getHead() {
         return _body.getFirst();
     }
-
-    public String getId() {
-        return _id;
-    }
-
     public Color getColor() {
         return _color;
     }
@@ -78,7 +71,7 @@ public class Snake {
         return gamePackages;
     }
     public void setDirection(Direction direction) {
-
+        //TODO check if going into own body
         _direction = direction;
     }
     public boolean pointOverlapsWithBody(Position point) {

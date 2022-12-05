@@ -51,8 +51,9 @@ public class SnakeGame {
 
         System.out.println(sb);
     }
-    public void addSnake(String id, Color givenColor, String givenName) {
-        Snake snake = new Snake(id, givenColor, givenName, Direction.RIGHT, getRandomEmptyPosition());
+    public Snake addSnake(String givenName) {
+        Color color = new Color((int)(Math.random()*0x1000000));
+        Snake snake = new Snake(color, givenName, Direction.RIGHT, getRandomEmptyPosition());
         //TODO add system to not face wall when spawned
         _snakes.add(snake);
         GamePackage add = new GamePackage(
@@ -60,16 +61,7 @@ public class SnakeGame {
                 snake.getColor(),
                 FieldValue.SNAKE);
         processGamePackage(add);
-    }
-
-    public void setSnakeDirection(String id, Direction givenDirection) {
-        for (Snake snake : _snakes) {
-            if (snake.getId().equals(id)) {
-                System.out.println("snake found setting direction to " + givenDirection);
-                snake.setDirection(givenDirection);
-                break;
-            }
-        }
+        return snake;
     }
     //calculates next update and returns all position changes
     public List<GamePackage> nextUpdate() {
@@ -105,15 +97,6 @@ public class SnakeGame {
     public void processGamePackages(List<GamePackage> gamePackages) {
         for (GamePackage curr : gamePackages) {
             setValueAtPosition(curr);
-        }
-    }
-    //removes snake in the next update
-    public void removeSnake(String id) {
-        for (Snake snake : _snakes) {
-            if (snake.getId().equals(id)) {
-                _snakesToRemove.add(snake);
-                break;
-            }
         }
     }
     public FieldValue getValueAtPosition(Position position) {
