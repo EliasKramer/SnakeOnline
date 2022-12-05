@@ -65,7 +65,7 @@ public class SnakeGame {
     }
     //calculates next update and returns all position changes
     public List<GamePackage> nextUpdate() {
-        List<GamePackage> gamePackages = getPositionChangesForNewUpdate();
+        List<GamePackage> gamePackages = calculateNewUpdate();
         processGamePackages(gamePackages);
         return gamePackages;
     }
@@ -138,9 +138,8 @@ public class SnakeGame {
         }
         return emptyFields;
     }
-
     //this function is not idempotent
-    public List<GamePackage> getPositionChangesForNewUpdate() {
+    public List<GamePackage> calculateNewUpdate() {
         LinkedList<GamePackage> gamePackages = new LinkedList<>();
 
         GamePackage newFoodLocation = updateFood();
@@ -181,7 +180,6 @@ public class SnakeGame {
 
         return gamePackages;
     }
-
     private boolean positionCollidesWithFood(Position nextHeadPos) {
         return !foodIsEaten() && nextHeadPos.equals(_foodPosition);
     }
@@ -199,7 +197,6 @@ public class SnakeGame {
             throw new IllegalArgumentException("Position is not on board");
         }
     }
-
     private boolean positionCollidesWithAnyBody(Position position) {
         for (Snake curr : _snakes) {
             if (curr.pointOverlapsWithBody(position)) {
@@ -208,18 +205,14 @@ public class SnakeGame {
         }
         return false;
     }
-
     private boolean positionIsOnBoard(Position position) {
         return position.getX() >= 0 && position.getX() < getWidth() &&
                 position.getY() >= 0 && position.getY() < getHeight();
     }
-
     public int getHeight() {
         return _board[0].length;
     }
-
     public int getWidth() {
         return _board.length;
     }
-
 }
