@@ -2,13 +2,11 @@ package org.example.Server;
 
 import org.example.Game.*;
 import org.example.Networking.ClientPackage.GamePackage;
-import org.example.Networking.ServerPackage.InputPackage;
+import org.example.Networking.NetworkSettings;
 
-import java.awt.*;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.time.Instant;
 import java.util.*;
 import java.util.List;
@@ -19,19 +17,15 @@ public class Server extends Thread {
     private boolean _running = true;
     //the update time in milliseconds. a
     private final long _stateUpdateCycle = 300;
-
     ServerSocket _server;
+    private final Map<String, ServerClient> _clientMap;
+    private final List<GamePackage> _removedSnakesPackages = new LinkedList<>();
 
-    private int _port;
-    private Map<String, ServerClient> _clientMap;
-    private List<GamePackage> _removedSnakes = new LinkedList<>();
-
-    public Server(String givenName, int givenPort) {
+    public Server(String givenName) {
         _name = givenName;
-        _port = givenPort;
         _game = new SnakeGame(40, 20);
         try {
-            _server = new ServerSocket(6969);
+            _server = new ServerSocket(NetworkSettings.PORT);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -39,8 +33,8 @@ public class Server extends Thread {
 
         startHandleUsersThread();
     }
-
     private void startHandleUsersThread() {
+        //this is a thread that runs in the background and handles all the users that want to join
         Thread t = new Thread(() -> {
             while (_running) {
                 try {
@@ -56,66 +50,48 @@ public class Server extends Thread {
         });
         t.start();
     }
-
-    @Override
-    public void run() {
-        long lastTimeUpdated = getCurrentTimeInMs();
-        long iterationsBetweenUpdate = 0;
-        long updateCounter = 0;
-        _game.printBoard();
-        System.out.println("height: " + _game.getHeight() + " width: " + _game.getWidth());
-        while (_running) {
-            final long currTime = getCurrentTimeInMs();
-            final long timeSinceLastUpdate = currTime - lastTimeUpdated;
-
-            if (timeSinceLastUpdate >= _stateUpdateCycle) {
-                List<GamePackage> gamePackages = _game.nextUpdate();
-                gamePackages.addAll(_removedSnakes);
-
-                for (ServerClient client : _clientMap.values()) {
-                    client.sendGamePackages(gamePackages);
-                }
-                //_game.printBoard();
-                lastTimeUpdated = currTime;
-                iterationsBetweenUpdate = 0;
-                _removedSnakes.clear();
-                if (updateCounter % 2 == 0) {
-                    _game.printBoard();
-                }
-                updateCounter++;
-            } else {
-                //do nothing
-                //inputs are handled in a separate thread
-                iterationsBetweenUpdate++;
-            }
-        }
-    }
-
-    /*
-        public void handleAddUserPackage(AddUserPackage givenPackage) {
-            if(givenPackage == null) {
-                throw new IllegalArgumentException("givenPackage cannot be null");
-            }
-            if(_clientInputMap.containsKey(givenPackage.getUserId())) {
-                throw new IllegalArgumentException(givenPackage.getUserId()+" already exists and cannot be added again");
-            }
-            _clientInputMap.put(givenPackage.getUserId(), null);
-
-            //random color
-        }*/
     private void addClient(Socket socket) {
         Snake addedSnake = _game.addSnake("Snake name");
 
         String id = socket.getInetAddress().toString();
+        //add a new client to the server
+        //this client controls the snake and manages the in and output
         _clientMap.put(id, new ServerClient(id, socket, this, _game, addedSnake));
     }
 
+    public void removeClient(ServerClient serverClient) {
+        //remove the snake from the client
+        _clientMap.remove(serverClient.getId());
+        //remove get the update packages after the snake is removed
+        _removedSnakesPackages.addAll(serverClient.getDeletedSnakePackages());
+    }
+    @Override
+    public void run() {
+        long lastTimeUpdated = getCurrentTimeInMs();
+        while (_running) {
+            final long currTime = getCurrentTimeInMs();
+            final long timeSinceLastUpdate = currTime - lastTimeUpdated;
+
+            //if the time since the last update is greater than the update cycle, update the game state
+            if (timeSinceLastUpdate >= _stateUpdateCycle) {
+                //the game calculates the next update and returns a list of packages
+                //these packages indicate what has changed in the game
+                List<GamePackage> gamePackages = _game.nextUpdate();
+                //if a user dies or disconnects a bunch of positions have to be updated
+                //these are added here
+                gamePackages.addAll(_removedSnakesPackages);
+
+                //send the packages to all clients
+                for (ServerClient client : _clientMap.values()) {
+                    client.sendGamePackages(gamePackages);
+                }
+                lastTimeUpdated = currTime;
+                //clear the list of removed snakes
+                _removedSnakesPackages.clear();
+            }
+        }
+    }
     private long getCurrentTimeInMs() {
         return Instant.now().toEpochMilli();
-    }
-
-    public void removeClient(ServerClient serverClient) {
-        _clientMap.remove(serverClient.getId());
-        _removedSnakes.addAll(serverClient.getDeletedSnakePackages());
     }
 }
