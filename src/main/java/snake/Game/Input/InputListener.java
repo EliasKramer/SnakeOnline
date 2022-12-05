@@ -1,6 +1,6 @@
-package org.example.Game.Input;
-import org.example.Game.Direction;
-import org.example.client.ClientGame;
+package snake.Game.Input;
+import snake.Game.Direction;
+import snake.client.ClientGame;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;

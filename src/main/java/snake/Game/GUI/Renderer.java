@@ -1,10 +1,7 @@
-package org.example.Game.GUI;
+package snake.Game.GUI;
 
-import org.example.Game.FieldValue;
-import org.example.Game.Position;
-import org.example.Game.Snake;
-import org.example.Game.SnakeGame;
-import org.example.client.ClientGame;
+import snake.Game.Position;
+import snake.client.ClientGame;
 
 import javax.swing.*;
 import java.awt.*;

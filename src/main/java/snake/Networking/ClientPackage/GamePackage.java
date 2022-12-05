@@ -1,8 +1,8 @@
-package org.example.Networking.ClientPackage;
+package snake.Networking.ClientPackage;
 
-import org.example.Game.ColorManager;
-import org.example.Game.FieldValue;
-import org.example.Game.Position;
+import snake.Game.ColorManager;
+import snake.Game.FieldValue;
+import snake.Game.Position;
 
 import java.awt.*;
 import java.io.Serializable;

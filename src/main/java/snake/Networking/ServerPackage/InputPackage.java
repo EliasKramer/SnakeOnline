@@ -1,7 +1,6 @@
-package org.example.Networking.ServerPackage;
+package snake.Networking.ServerPackage;
 
-import org.example.Game.Direction;
-import org.example.Server.Server;
+import snake.Game.Direction;
 
 import java.io.Serializable;
 

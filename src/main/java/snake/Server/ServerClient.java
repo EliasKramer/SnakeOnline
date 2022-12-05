@@ -1,15 +1,13 @@
-package org.example.Server;
+package snake.Server;
 
-import org.example.Game.Direction;
-import org.example.Game.Snake;
-import org.example.Game.SnakeGame;
-import org.example.Networking.ClientPackage.GamePackage;
-import org.example.Networking.ServerPackage.InputPackage;
+import snake.Game.Snake;
+import snake.Game.SnakeGame;
+import snake.Networking.ClientPackage.GamePackage;
+import snake.Networking.ServerPackage.InputPackage;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.LinkedList;
 import java.util.List;
 
 

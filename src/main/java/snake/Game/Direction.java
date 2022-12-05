@@ -1,6 +1,4 @@
-package org.example.Game;
-
-import java.awt.geom.Point2D;
+package snake.Game;
 
 public enum Direction {
     UP(new Position(0,-1)),

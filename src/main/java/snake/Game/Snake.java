@@ -1,7 +1,7 @@
-package org.example.Game;
+package snake.Game;
 
-import org.example.Networking.ClientPackage.GamePackage;
-import org.example.Networking.ClientPackage.MovePackage;
+import snake.Networking.ClientPackage.GamePackage;
+import snake.Networking.ClientPackage.MovePackage;
 
 import java.awt.*;
 import java.util.LinkedList;

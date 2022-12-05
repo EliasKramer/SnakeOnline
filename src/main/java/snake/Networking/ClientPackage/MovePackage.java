@@ -1,4 +1,4 @@
-package org.example.Networking.ClientPackage;
+package snake.Networking.ClientPackage;
 
 public class MovePackage {
     private final GamePackage _addPackage;

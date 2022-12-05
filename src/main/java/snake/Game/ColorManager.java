@@ -1,4 +1,4 @@
-package org.example.Game;
+package snake.Game;
 
 import java.awt.*;
 import java.util.HashMap;

@@ -1,17 +1,19 @@
-package org.example.client;
+package snake.client;
 
-import org.example.Game.*;
-import org.example.Game.Input.InputListener;
-import org.example.Networking.ClientPackage.GamePackage;
-import org.example.Networking.NetworkSettings;
-import org.example.Networking.ServerPackage.InputPackage;
+import snake.Game.Direction;
+import snake.Game.FieldValue;
+import snake.Game.Input.InputListener;
+import snake.Networking.ClientPackage.GamePackage;
+import snake.Networking.NetworkSettings;
+import snake.Networking.ServerPackage.InputPackage;
+import snake.Game.Position;
+import snake.Game.SnakeGame;
 
 import java.awt.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Scanner;
 
 public class ClientGame {
     private final SnakeGame _snakeGame;

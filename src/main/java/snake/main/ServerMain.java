@@ -1,9 +1,8 @@
-package org.example;
+package snake.main;
 
-import org.example.Networking.NetworkSettings;
-import org.example.Server.Server;
+import snake.Server.Server;
 
-public class Main {
+public class ServerMain {
     public static void main(String[] args) {
         Server server = new Server("ONLY SERVER");
         server.start();

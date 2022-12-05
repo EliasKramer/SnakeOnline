@@ -1,23 +1,11 @@
-package org.example.client;
+package snake.client;
 
-import org.example.Game.FieldValue;
-import org.example.Game.GUI.Renderer;
-import org.example.Game.Snake;
-import org.example.Game.SnakeGame;
+import snake.Game.GUI.Renderer;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class ClientWindow extends JFrame {
-    public static void main(String[] args) {
-        EventQueue.invokeLater(() -> {
-            ClientGame clientGame = new ClientGame(10, 10);
-            ClientWindow m = new ClientWindow(clientGame);
-            clientGame.setWindow(m);
-            m.setVisible(true);
-        });
-    }
-
     public ClientWindow(ClientGame game) {
         initUI(game);
     }

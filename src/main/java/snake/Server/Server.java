@@ -1,8 +1,10 @@
-package org.example.Server;
+package snake.Server;
 
-import org.example.Game.*;
-import org.example.Networking.ClientPackage.GamePackage;
-import org.example.Networking.NetworkSettings;
+
+import snake.Game.Snake;
+import snake.Networking.ClientPackage.GamePackage;
+import snake.Networking.NetworkSettings;
+import snake.Game.SnakeGame;
 
 import java.io.*;
 import java.net.ServerSocket;
