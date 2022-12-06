@@ -8,14 +8,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class SnakeGame {
-    private FieldValue[][] _board;
-    private Color[][] _colorBoard;
-    private LinkedList<Snake> _snakes;
-    private Color _foodColor;
+    private final FieldValue[][] _board;
+    private final Color[][] _colorBoard;
+    private final LinkedList<Snake> _snakes;
+    private final Color _foodColor;
     private Position _foodPosition;
-    private List<Snake> _deadSnakes;
-    private List<Snake> _snakesToRemove;
-    private Color _noFieldColor;
+    private final List<Snake> _deadSnakes;
+    private final List<Snake> _snakesToRemove;
+
     public SnakeGame(int size) {
         this(size, size);
     }
@@ -28,7 +28,7 @@ public class SnakeGame {
         _snakesToRemove = new LinkedList<>();
         _foodPosition = null;
         _foodColor = Color.CYAN;
-        _noFieldColor = ColorManager.getInstance().getEnvironmentColor();
+        Color _noFieldColor = ColorManager.getInstance().getEnvironmentColor();
         for (int i = 0; i < x; i++) {
             for (int j = 0; j < y; j++) {
                 setValueAtPosition(new GamePackage(new Position(i,j), _noFieldColor, FieldValue.EMPTY));
@@ -53,8 +53,10 @@ public class SnakeGame {
     }
     public Snake addSnake(String givenName) {
         Color color = new Color((int)(Math.random()*0x1000000));
-        Snake snake = new Snake(color, givenName, Direction.RIGHT, getRandomEmptyPosition());
-        //TODO add system to not face wall when spawned
+        Position randomPos = getRandomEmptyPosition();
+        Direction direction = randomPos.getX() > getWidth()/2 ? Direction.LEFT : Direction.RIGHT;
+
+        Snake snake = new Snake(color, givenName, direction, randomPos);
         _snakes.add(snake);
         GamePackage add = new GamePackage(
                 snake.getHead(),

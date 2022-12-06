@@ -14,24 +14,25 @@ import java.io.*;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Scanner;
 
 public class ClientGame {
     private final SnakeGame _snakeGame;
-    private Socket _client;
+    private final Socket _client;
     private ClientWindow _window;
-    private ObjectInputStream _ois;
-    private ObjectOutputStream _oos;
-    private int _width;
-    private int _height;
+    private final ObjectInputStream _ois;
+    private final ObjectOutputStream _oos;
+    private final int _width;
+    private final int _height;
 
     private Position _snakeHeadPosition;
 
     public ClientGame(int width, int height) {
         _width = width;
         _height = height;
-        //Scanner scanner = new Scanner(System.in);
-        //System.out.print("Enter the server IP: ");
-        String ip = "localhost";// scanner.nextLine();
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the server IP: ");
+        String ip = scanner.nextLine();
         try {
             _client = new Socket(ip, NetworkSettings.PORT);
         } catch (IOException e) {
@@ -50,17 +51,7 @@ public class ClientGame {
         }
         System.out.println("initializing game with width: " + width + " and height: " + height);
         _snakeGame = new SnakeGame(width,height);
-        /*
-        _board = new FieldValue[width][height];
-        _colorBoard = new Colors[width][height];
 
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                _board[i][j] = FieldValue.EMPTY;
-                _colorBoard[i][j] = Colors.RESET;
-            }
-        }
-        */
         Thread t = new Thread(() -> {
             while (true) {
                 processNextUpdate();
@@ -71,7 +62,7 @@ public class ClientGame {
         });
         t.start();
 
-        InputListener listener = new InputListener(this);
+        new InputListener(this);
     }
 
     public void setWindow(ClientWindow window) {
@@ -98,47 +89,6 @@ public class ClientGame {
             e.printStackTrace();
         }
     }
-    /*
-        private void processGamePackage(GamePackage gamePackage) {
-            setValueAtPosition(gamePackage);
-        }
-
-        private List<Position> getEmptyFields() {
-            List<Position> emptyFields = new LinkedList<>();
-            for (int i = 0; i < _board.length; i++) {
-                for (int j = 0; j < _board[i].length; j++) {
-                    if (_board[i][j] == FieldValue.EMPTY) {
-                        emptyFields.add(new Position(i, j));
-                    }
-                }
-            }
-            return emptyFields;
-        }
-
-        private void setValueAtPosition(GamePackage gamePackage) {
-            if (positionIsOnBoard(gamePackage.getPosition())) {
-                _board
-                        [gamePackage.getPosition().getX()]
-                        [gamePackage.getPosition().getY()] =
-                        gamePackage.getFieldValue();
-                _colorBoard
-                        [gamePackage.getPosition().getX()]
-                        [gamePackage.getPosition().getY()] =
-                        gamePackage.getColor();
-            } else {
-                throw new IllegalArgumentException("Position is not on board");
-            }
-        }
-
-        private boolean positionIsOnBoard(Position position) {
-            return position.getX() >= 0 && position.getX() < _board.length &&
-                    position.getY() >= 0 && position.getY() < _board[0].length;
-        }
-
-        public FieldValue[][] getBoard() {
-            return _board;
-        }
-        */
     public void sendInput(Direction direction) {
         try {
             System.out.println("Sending input");
